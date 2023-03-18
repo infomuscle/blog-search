@@ -1,4 +1,4 @@
-package com.blog.search.api.client.dto;
+package com.blog.search.api.client;
 
 import com.blog.search.api.client.external.ExternalSearchResponse;
 import com.blog.search.api.client.external.kakao.message.KakaoSearchResponse;
@@ -13,29 +13,29 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class ClientSearchResponse {
+public class SearchClientResponse {
 
     private Integer totalCount;
     private List<Post> posts;
 
-    public static ClientSearchResponse from(ExternalSearchResponse source) {
+    public static SearchClientResponse from(ExternalSearchResponse source) {
         if (source instanceof KakaoSearchResponse) {
-            return new ClientSearchResponse((KakaoSearchResponse) source);
+            return new SearchClientResponse((KakaoSearchResponse) source);
         }
 
         if (source instanceof NaverSearchResponse) {
-            return new ClientSearchResponse((NaverSearchResponse) source);
+            return new SearchClientResponse((NaverSearchResponse) source);
         }
 
         throw new SearchBusinessException(ApiResult.지원하지_않는_외부_API);
     }
 
-    public ClientSearchResponse(KakaoSearchResponse source) {
-        this.totalCount = source.getMeta().getTotalCounts();
+    public SearchClientResponse(KakaoSearchResponse source) {
+        this.totalCount = source.getMeta().getTotalCount();
         this.posts = source.getDocuments().stream().map(Post::new).collect(Collectors.toList());
     }
 
-    public ClientSearchResponse(NaverSearchResponse source) {
+    public SearchClientResponse(NaverSearchResponse source) {
         this.totalCount = source.getTotal();
         this.posts = source.getItems().stream().map(Post::new).collect(Collectors.toList());
     }

@@ -1,6 +1,6 @@
 package com.blog.search.api.dto;
 
-import com.blog.search.api.client.dto.ClientSearchResponse;
+import com.blog.search.api.client.SearchClientResponse;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -16,10 +16,11 @@ public class SearchResponse {
     private Integer totalPageCount;
     private List<Post> posts;
 
-    public SearchResponse(ClientSearchResponse source, Integer page, Integer size) {
+    public SearchResponse(SearchClientResponse source, Integer page, Integer size) {
         this.page = page;
         this.size = size;
         this.totalCount = source.getTotalCount();
+        this.totalPageCount = (source.getTotalCount() % size == 0) ? source.getTotalCount() / size : source.getTotalCount() / size + 1;
         this.posts = source.getPosts().stream().map(Post::new).collect(Collectors.toList());
     }
 
@@ -31,7 +32,7 @@ public class SearchResponse {
         private String url;
         private LocalDate postDateTime;
 
-        public Post(ClientSearchResponse.Post source) {
+        public Post(SearchClientResponse.Post source) {
             this.title = source.getTitle();
             this.contents = source.getContents();
             this.url = source.getUrl();

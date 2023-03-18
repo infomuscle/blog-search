@@ -49,7 +49,7 @@ public class KakaoSearchResponse extends ExternalSearchResponse {
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Meta {
 
-        private Integer totalCounts;
+        private Integer totalCount;
         private Integer pageableCount;
         private Boolean isEnd;
 
