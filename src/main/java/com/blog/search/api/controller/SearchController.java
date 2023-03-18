@@ -1,12 +1,11 @@
 package com.blog.search.api.controller;
 
+import com.blog.search.api.client.dto.ClientSearchResponse;
+import com.blog.search.api.dto.SearchResponse;
 import com.blog.search.api.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -21,15 +20,14 @@ public class SearchController {
     // 검색어 = 자원? -> blog/query/{query}?
 
     @GetMapping
-    public String search(@RequestParam String query, @RequestParam(required = false) String sort, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
-        log.info("SearchController.search# query: {} ", query);
-        searchService.search(query, sort, page, size);
+    public SearchResponse search(@RequestParam String query, @RequestParam(required = false) String sort, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
+        // sort = accuracy, recency
 
-        return query;
+        return searchService.search(query, sort, page, size);
     }
 
-    @GetMapping("/top")
-    public String listTopQueries(@RequestParam String query) {
+    @GetMapping("/top/{size}")
+    public String listTopQueries(@RequestParam String query, @PathVariable Integer size) {
         log.info("SearchController.listTopQueries# query: {} ", query);
 
         return query;
