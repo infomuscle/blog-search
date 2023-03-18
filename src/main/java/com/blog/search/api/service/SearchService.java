@@ -1,10 +1,11 @@
 package com.blog.search.api.service;
 
 import com.blog.search.api.dto.SearchResponse;
+import com.blog.search.api.dto.TopQueryListResponse;
 
 public interface SearchService {
 
     SearchResponse search(String query, String sort, Integer page, Integer size);
 
-    void listTopQueries();
+    TopQueryListResponse listTopQueries();
 }

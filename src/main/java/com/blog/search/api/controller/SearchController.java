@@ -2,9 +2,13 @@ package com.blog.search.api.controller;
 
 import com.blog.search.api.dto.ApiResponse;
 import com.blog.search.api.dto.SearchResponse;
+import com.blog.search.api.dto.TopQueryListResponse;
 import com.blog.search.api.service.SearchService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -22,7 +26,6 @@ public class SearchController {
     // 좀 더 고민 필요
     // api 명시 여부
     // 검색어 = 자원? -> blog/query/{query}?
-
     // sort = accuracy, recency
 
     @GetMapping
@@ -39,10 +42,10 @@ public class SearchController {
         return ApiResponse.success(search);
     }
 
-    @GetMapping("/top/{size}")
-    public String listTopQueries(@RequestParam String query, @PathVariable Integer size) {
+    @GetMapping("/top")
+    public ApiResponse listTopQueries() {
+        TopQueryListResponse topQueries = searchService.listTopQueries();
 
-        return query;
+        return ApiResponse.success(topQueries);
     }
-
 }
