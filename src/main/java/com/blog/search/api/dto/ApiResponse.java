@@ -23,11 +23,20 @@ public class ApiResponse<T> {
         this.message = e.getApiResult().getMessage();
     }
 
+    public ApiResponse(SearchBusinessException e, String additionalMessage) {
+        this.status = e.getApiResult().getHttpStatus();
+        this.message = new StringBuilder().append(e.getApiResult().getMessage()).append(" ").append(additionalMessage).toString();
+    }
+
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(data);
     }
 
     public static <T> ApiResponse<T> fail(SearchBusinessException e) {
         return new ApiResponse<>(e);
+    }
+
+    public static <T> ApiResponse<T> fail(SearchBusinessException e, String additionalMessage) {
+        return new ApiResponse<>(e, additionalMessage);
     }
 }

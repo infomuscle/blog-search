@@ -12,6 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface NaverFeignClient extends ExternalFeignClient {
 
     @GetMapping(value = "/v1/search/blog.json", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    NaverSearchResponse search(@RequestParam String query, @RequestParam(required = false) String sort, @RequestParam(required = false) Integer start, @RequestParam(required = false) Integer display);
+    NaverSearchResponse search(@RequestParam(value = "query") String query, @RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "start", required = false) Integer start, @RequestParam(value = "display", required = false) Integer display);
 
 }

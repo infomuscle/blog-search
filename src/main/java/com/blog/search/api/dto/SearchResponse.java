@@ -10,13 +10,15 @@ import java.util.stream.Collectors;
 @Getter
 public class SearchResponse {
 
+    private String sort;
     private Integer page;
     private Integer size;
     private Integer totalCount;
     private Integer totalPageCount;
     private List<Post> posts;
 
-    public SearchResponse(SearchClientResponse source, Integer page, Integer size) {
+    public SearchResponse(SearchClientResponse source, String sort, Integer page, Integer size) {
+        this.sort = sort;
         this.page = page;
         this.size = size;
         this.totalCount = source.getTotalCount();

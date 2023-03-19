@@ -22,7 +22,7 @@ public class SearchServiceV1 implements SearchService {
     public SearchResponse search(String query, String sort, Integer page, Integer size) {
         SearchClientResponse response = searchClient.search(query, sort, page, size);
 
-        return new SearchResponse(response, page, size);
+        return new SearchResponse(response, sort, page, size);
     }
 
     @Override
