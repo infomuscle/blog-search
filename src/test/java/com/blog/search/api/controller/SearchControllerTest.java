@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DisplayName("[검색] 통합 테스트")
+@DisplayName("[통합 테스트] 컨트롤러")
 class SearchControllerTest {
 
     private static final String URL_LIST_TOP_QUERIS = "/blog/v1/search/queries/top";
@@ -45,7 +45,7 @@ class SearchControllerTest {
     private EntityManagerFactory emf;
 
     @BeforeAll
-    public void init() {
+    void init() {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
@@ -64,7 +64,7 @@ class SearchControllerTest {
         @ParameterizedTest
         @DisplayName("[성공]")
         @CsvSource(value = {"jpa, accuracy, 1, 10", "jpa, accuracy, 2, 5", "jpa, recency, 3, 50"}, nullValues = "null")
-        public void testSuccess(String query, String sort, Integer page, Integer size) throws Exception {
+        void testSuccess(String query, String sort, Integer page, Integer size) throws Exception {
             MultiValueMap<String, String> parmas = createParmas(query, sort, page, size);
             performGet(URL_SEARCH, parmas)
                     .andExpect(jsonPath("$.status", is(ApiResult.정상.getHttpStatus())))
@@ -80,7 +80,7 @@ class SearchControllerTest {
         @ParameterizedTest
         @DisplayName("[실패] 필수 파라미터 누락")
         @CsvSource(value = {"null, accuracy, 1, 10", "jpa, null, 1, 10", "jpa, accuracy, null, 10", "jpa, accuracy, 1, null"}, nullValues = "null")
-        public void testFailMissingParameter(String query, String sort, Integer page, Integer size) throws Exception {
+        void testFailMissingParameter(String query, String sort, Integer page, Integer size) throws Exception {
             MultiValueMap<String, String> parmas = createParmas(query, sort, page, size);
             performGet(URL_SEARCH, parmas)
                     .andExpect(jsonPath("$.status", is(ApiResult.필수_파라미터_누락.getHttpStatus())))
@@ -92,7 +92,7 @@ class SearchControllerTest {
         @ParameterizedTest
         @DisplayName("[실패] 파라미터 검증 실패")
         @CsvSource(value = {"jpa, test, 1, 10", "jpa, accuracy, 0, 10", "jpa, accuracy, 51, 10", "jpa, accuracy, 1, 0", "jpa, accuracy, 1, 51"})
-        public void testFailConstraintViolation(String query, String sort, Integer page, Integer size) throws Exception {
+        void testFailConstraintViolation(String query, String sort, Integer page, Integer size) throws Exception {
             MultiValueMap<String, String> parmas = createParmas(query, sort, page, size);
             performGet(URL_SEARCH, parmas)
                     .andExpect(jsonPath("$.status", is(ApiResult.파라미터_검증_실패.getHttpStatus())))
@@ -100,8 +100,6 @@ class SearchControllerTest {
                     .andExpect(jsonPath("$.data", nullValue()))
             ;
         }
-
-        // 카카오 실패
     }
 
 
@@ -112,7 +110,7 @@ class SearchControllerTest {
         @DisplayName("[성공] 검색횟수 증가 반영")
         @ParameterizedTest
         @CsvSource({"0", "1", "2", "3"})
-        public void testSuccessAfterSearch(Integer count) throws Exception {
+        void testSuccessAfterSearch(Integer count) throws Exception {
 
             MultiValueMap<String, String> params = createParmas(MOCK_QUERIES[count], "accuracy", 1, 10);
             for (Integer i = 0; i < count; i++) {

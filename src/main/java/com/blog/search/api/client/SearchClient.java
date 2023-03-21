@@ -24,9 +24,9 @@ public class SearchClient {
 
     private final ApplicationContext applicationContext;
 
-    private List<ExternalFeignClient> clients;
+    private final List<ExternalClientAdapter> adapters;
 
-    private List<ExternalClientAdapter> adapters;
+    private List<ExternalFeignClient> clients;
 
     @PostConstruct
     public void init() {
@@ -48,10 +48,6 @@ public class SearchClient {
                 clients.add(clientBeans.get(beanName.get()));
             }
         }
-
-        // 어댑터는 순서 X
-        adapters = new ArrayList<>();
-        adapters.addAll(applicationContext.getBeansOfType(ExternalClientAdapter.class).values());
     }
 
     public SearchClientResponse search(String query, String sort, Integer page, Integer size) {

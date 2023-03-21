@@ -9,6 +9,7 @@ public class SearchBusinessException extends RuntimeException {
     private ApiResult apiResult;
 
     public SearchBusinessException(ApiResult apiResult) {
+        super(apiResult.getMessage());
         this.apiResult = apiResult;
     }
 }

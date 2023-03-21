@@ -60,7 +60,7 @@ public class SearchPage {
             this.title = source.getTitle();
             this.contents = source.getContents();
             this.url = source.getUrl();
-            this.postDate = source.getPostDateTime();
+            this.postDate = source.getPostDate();
         }
     }
 }
