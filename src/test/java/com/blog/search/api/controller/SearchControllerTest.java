@@ -2,8 +2,7 @@ package com.blog.search.api.controller;
 
 import com.blog.search.api.constant.ApiResult;
 import com.blog.search.api.entity.SearchQuery;
-import com.blog.search.api.repository.SearchQueryRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
@@ -19,8 +18,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,26 +38,23 @@ class SearchControllerTest {
     private static final String[] MOCK_QUERIES = new String[] {"intellij", "스프링부트", "sqld", "postgresql", "mysql", "카카오", "naver", "테스트코드", "레디스", "kafka", "rabbitmq", "spring boot", "gradle 그레이들", "시스템 설계", "db 인덱스"};
     private static final Long[] MOCK_SEARCH_COUNTS = new Long[] {482402858L, 274960282L, 94284283L, 58692383L, 52352341L, 7293482L, 4451345L, 64313L, 54334L, 9353L, 7532L, 3341L, 245L, 42L, 8L};
 
-    private ObjectMapper om = new ObjectMapper();
-
     @Autowired(required = false)
     private MockMvc mockMvc;
 
     @Autowired
-    private EntityManager em;
+    private EntityManagerFactory emf;
 
-    @Autowired
-    private SearchQueryRepository searchQueryRepository;
-
-    @PostConstruct
+    @BeforeAll
     public void init() {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
         for (int i = 0; i < MOCK_QUERIES.length; i++) {
             SearchQuery searchQuery = new SearchQuery(MOCK_QUERIES[i]);
             ReflectionTestUtils.setField(searchQuery, "searchCount", MOCK_SEARCH_COUNTS[i]);
-            // em.persist(searchQuery);
-            searchQueryRepository.save(searchQuery);
+            em.persist(searchQuery);
         }
-        // em.flush();
+        tx.commit();
     }
 
     @Nested
@@ -94,7 +91,7 @@ class SearchControllerTest {
 
         @ParameterizedTest
         @DisplayName("[실패] 파라미터 검증 실패")
-        @CsvSource(value = {"jpa, accuracy, 0, 10", "jpa, accuracy, 51, 10", "jpa, accuracy, 1, 0", "jpa, accuracy, 1, 51"})
+        @CsvSource(value = {"jpa, test, 1, 10", "jpa, accuracy, 0, 10", "jpa, accuracy, 51, 10", "jpa, accuracy, 1, 0", "jpa, accuracy, 1, 51"})
         public void testFailConstraintViolation(String query, String sort, Integer page, Integer size) throws Exception {
             MultiValueMap<String, String> parmas = createParmas(query, sort, page, size);
             performGet(URL_SEARCH, parmas)
@@ -103,6 +100,8 @@ class SearchControllerTest {
                     .andExpect(jsonPath("$.data", nullValue()))
             ;
         }
+
+        // 카카오 실패
     }
 
 
@@ -150,7 +149,6 @@ class SearchControllerTest {
 
     private ResultActions performGet(String url) {
         return performGet(url, new LinkedMultiValueMap<>());
-
     }
 
     private ResultActions performGet(String url, MultiValueMap<String, String> params) {

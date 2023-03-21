@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @Validated
@@ -21,21 +22,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SearchController {
 
+    private static final String INVALID_SORT_MESSAGE = "정렬 조건 파라미터는 accuracy(정확도순) 또는 recency(최신순)이어야 합니다.";
     private static final String INVALID_PAGE_MESSAGE = "페이지는 1~50 범위까지 지원합니다.";
     private static final String INVALID_SIZE_MESSAGE = "페이지 크기는 1~50 범위까지 지원합니다.";
 
     private final SearchService searchService;
 
-    // 좀 더 고민 필요
-    // api 명시 여부
-    // 검색어 = 자원? -> blog/query/{query}?
+    // rest 디자인 좀 더 고민 필요
     // sort = accuracy, recency
     // 파라미터 이상시 default가 좋을까 예외 던지는 게 좋을까
 
     @GetMapping
     public ApiResponse search(
             @RequestParam String query,
-            @RequestParam String sort,
+            @RequestParam @Pattern(regexp = "^(accuracy|recency)$", message = INVALID_SORT_MESSAGE) String sort,
             @RequestParam @Min(value = 1, message = INVALID_PAGE_MESSAGE) @Max(value = 50, message = INVALID_PAGE_MESSAGE) Integer page,
             @RequestParam @Min(value = 1, message = INVALID_SIZE_MESSAGE) @Max(value = 50, message = INVALID_SIZE_MESSAGE) Integer size
     ) {

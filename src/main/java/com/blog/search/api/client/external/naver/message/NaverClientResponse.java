@@ -1,6 +1,6 @@
 package com.blog.search.api.client.external.naver.message;
 
-import com.blog.search.api.client.external.ExternalSearchResponse;
+import com.blog.search.api.client.external.ExternalClientResponse;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NaverSearchResponse extends ExternalSearchResponse {
+public class NaverClientResponse extends ExternalClientResponse {
 
     private String lastBuildDate;
     private Integer total;

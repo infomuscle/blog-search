@@ -1,9 +1,9 @@
 package com.blog.search.api.client;
 
 import com.blog.search.api.client.external.ExternalClientAdapter;
+import com.blog.search.api.client.external.ExternalClientResponse;
 import com.blog.search.api.client.external.ExternalContentsProvider;
 import com.blog.search.api.client.external.ExternalFeignClient;
-import com.blog.search.api.client.external.ExternalSearchResponse;
 import com.blog.search.api.constant.ApiResult;
 import com.blog.search.api.exception.SearchBusinessException;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +40,8 @@ public class SearchClient {
         // Enum 순서대로 리스트에 클리이언트 빈 추가
         ExternalContentsProvider[] providers = ExternalContentsProvider.values();
         for (ExternalContentsProvider provider : providers) {
+
+            // 컨텐츠 제공자 Enum 이름 소문자와 빈 이름에 일치하는 부분으로 찾기
             String providerName = provider.name().toLowerCase();
             Optional<String> beanName = clientBeans.keySet().stream().filter(k -> k.contains(providerName)).findFirst();
             if (beanName.isPresent()) {
@@ -66,11 +68,12 @@ public class SearchClient {
         throw new SearchBusinessException(ApiResult.외부_API_통신_실패);
     }
 
-    // for? Map? 유의미한 차이가 있을까?
     private SearchClientResponse searchExternal(ExternalFeignClient client, String query, String sort, Integer page, Integer size) {
+
+        // 어댑터별로 지원 여부 확인하고 지원시 검색 API 호출
         for (ExternalClientAdapter adapter : adapters) {
             if (adapter.supports(client)) {
-                ExternalSearchResponse externalResponse = adapter.search(client, query, sort, page, size);
+                ExternalClientResponse externalResponse = adapter.search(client, query, sort, page, size);
                 return SearchClientResponse.from(externalResponse);
             }
         }

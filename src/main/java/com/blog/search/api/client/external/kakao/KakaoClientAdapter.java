@@ -1,8 +1,8 @@
 package com.blog.search.api.client.external.kakao;
 
 import com.blog.search.api.client.external.ExternalClientAdapter;
+import com.blog.search.api.client.external.ExternalClientResponse;
 import com.blog.search.api.client.external.ExternalFeignClient;
-import com.blog.search.api.client.external.ExternalSearchResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +13,7 @@ public class KakaoClientAdapter implements ExternalClientAdapter {
     }
 
     @Override
-    public ExternalSearchResponse search(ExternalFeignClient client, String query, String sort, Integer page, Integer size) {
+    public ExternalClientResponse search(ExternalFeignClient client, String query, String sort, Integer page, Integer size) {
         return client.search(query, sort, page, size);
     }
 }

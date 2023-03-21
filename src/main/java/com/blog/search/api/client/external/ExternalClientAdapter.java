@@ -4,6 +4,6 @@ public interface ExternalClientAdapter {
 
     Boolean supports(ExternalFeignClient client);
 
-    ExternalSearchResponse search(ExternalFeignClient client, String query, String sort, Integer page, Integer size);
+    ExternalClientResponse search(ExternalFeignClient client, String query, String sort, Integer page, Integer size);
 
 }

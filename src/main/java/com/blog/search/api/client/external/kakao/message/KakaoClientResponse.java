@@ -1,6 +1,6 @@
 package com.blog.search.api.client.external.kakao.message;
 
-import com.blog.search.api.client.external.ExternalSearchResponse;
+import com.blog.search.api.client.external.ExternalClientResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class KakaoSearchResponse extends ExternalSearchResponse {
+public class KakaoClientResponse extends ExternalClientResponse {
 
     private List<Document> documents;
     private Meta meta;

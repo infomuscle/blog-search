@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class SearchControllerAdivce {
 
     /**
-     * 핸들링된 예외
+     * 비즈니스 예외
      */
     @ExceptionHandler
     public ResponseEntity handleException(SearchBusinessException e) {
@@ -28,6 +28,9 @@ public class SearchControllerAdivce {
         return ResponseEntity.status(e.getApiResult().getHttpStatus()).body(ApiResponse.fail(e));
     }
 
+    /**
+     * 필수 파라미터 누락
+     */
     @ExceptionHandler
     public ResponseEntity handleException(MissingServletRequestParameterException e) {
         log.info(e.getMessage(), e);
@@ -37,6 +40,9 @@ public class SearchControllerAdivce {
         return ResponseEntity.badRequest().body(ApiResponse.fail(exception));
     }
 
+    /**
+     * 필수 검증 실패
+     */
     @ExceptionHandler
     public ResponseEntity handleException(ConstraintViolationException e) {
         log.info(e.getMessage(), e);
@@ -49,7 +55,8 @@ public class SearchControllerAdivce {
     }
 
     /**
-     * 핸들링 안 된 예외
+     * 핸들링 못 한 예외
+     * 실제로는 Sentry 등 별도 모니터링 적용
      */
     @ExceptionHandler
     public ResponseEntity handleException(Exception e) {
