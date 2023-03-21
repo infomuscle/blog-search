@@ -1,7 +1,7 @@
 package com.blog.search.api.aspect;
 
-import com.blog.search.api.entity.Query;
-import com.blog.search.api.repository.QueryRepository;
+import com.blog.search.api.entity.SearchQuery;
+import com.blog.search.api.repository.SearchQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -16,18 +16,20 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SearchAspect {
 
-    private final QueryRepository queryRepository;
+    private final SearchQueryRepository searchQueryRepository;
 
     @Around(value = "execution(* com.blog.search.api.service.*.search(..)) && args(query, ..)")
     public Object aroundSearch(ProceedingJoinPoint pjp, String query) throws Throwable {
-        save(query);
+        updateQuerySearchCount(query);
 
         return pjp.proceed();
     }
 
     // 실제로 한다면 따로 미들웨어를 두지 않을까
     @Transactional
-    public void save(String query) {
-        queryRepository.save(new Query(query));
+    public void updateQuerySearchCount(String query) {
+        SearchQuery searchQuery = searchQueryRepository.findByQueryValue(query).orElse(new SearchQuery(query));
+        searchQuery.updateSearchCount();
+        searchQueryRepository.save(searchQuery);
     }
 }

@@ -1,11 +1,10 @@
 package com.blog.search.api.controller;
 
 import com.blog.search.api.dto.ApiResponse;
-import com.blog.search.api.dto.SearchResponse;
-import com.blog.search.api.dto.TopQueryListResponse;
+import com.blog.search.api.dto.SearchPage;
+import com.blog.search.api.dto.TopQuery;
 import com.blog.search.api.service.SearchService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.util.List;
 
-@Slf4j
 @Validated
 @RestController
 @RequestMapping("/blog/v1/search")
@@ -40,15 +39,14 @@ public class SearchController {
             @RequestParam @Min(value = 1, message = INVALID_PAGE_MESSAGE) @Max(value = 50, message = INVALID_PAGE_MESSAGE) Integer page,
             @RequestParam @Min(value = 1, message = INVALID_SIZE_MESSAGE) @Max(value = 50, message = INVALID_SIZE_MESSAGE) Integer size
     ) {
-        log.info("SearchController.search# page: {} ", page);
-        SearchResponse search = searchService.search(query, sort, page, size);
+        SearchPage search = searchService.search(query, sort, page, size);
 
         return ApiResponse.success(search);
     }
 
     @GetMapping("/top")
     public ApiResponse listTopQueries() {
-        TopQueryListResponse topQueries = searchService.listTopQueries();
+        List<TopQuery> topQueries = searchService.listTopQueries();
 
         return ApiResponse.success(topQueries);
     }

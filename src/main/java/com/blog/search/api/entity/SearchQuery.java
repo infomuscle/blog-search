@@ -10,7 +10,7 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Query extends Audit {
+public class SearchQuery extends Audit {
 
     @Id
     @GeneratedValue
@@ -18,7 +18,14 @@ public class Query extends Audit {
 
     private String queryValue;
 
-    public Query(String queryValue) {
+    private Long searchCount;
+
+    public SearchQuery(String queryValue) {
         this.queryValue = queryValue;
+        this.searchCount = 0L;
+    }
+
+    public Long updateSearchCount() {
+        return ++searchCount;
     }
 }

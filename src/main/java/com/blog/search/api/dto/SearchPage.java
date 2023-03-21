@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class SearchResponse {
+public class SearchPage {
 
     private String sort;
     private Integer page;
@@ -17,7 +17,7 @@ public class SearchResponse {
     private Integer totalPageCount;
     private List<Post> posts;
 
-    public SearchResponse(SearchClientResponse source, String sort, Integer page, Integer size) {
+    public SearchPage(SearchClientResponse source, String sort, Integer page, Integer size) {
         this.sort = sort;
         this.page = page;
         this.size = size;
