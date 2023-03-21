@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("[검색] 통합 테스트")
 class SearchControllerTest {
 
-    private static final String URL_LIST_TOP_QUERIS = "/blog/v1/search/top";
+    private static final String URL_LIST_TOP_QUERIS = "/blog/v1/search/queries/top";
     private static final String URL_SEARCH = "/blog/v1/search";
     private static final String[] MOCK_QUERIES = new String[] {"intellij", "스프링부트", "sqld", "postgresql", "mysql", "카카오", "naver", "테스트코드", "레디스", "kafka", "rabbitmq", "spring boot", "gradle 그레이들", "시스템 설계", "db 인덱스"};
     private static final Long[] MOCK_SEARCH_COUNTS = new Long[] {482402858L, 274960282L, 94284283L, 58692383L, 52352341L, 7293482L, 4451345L, 64313L, 54334L, 9353L, 7532L, 3341L, 245L, 42L, 8L};

@@ -2,13 +2,21 @@ package com.blog.search.api.dto;
 
 import com.blog.search.api.constant.ApiResult;
 import com.blog.search.api.exception.SearchBusinessException;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
 @Getter
+@ApiModel(value = "ApiResponse", description = "공통 응답 DTO")
 public class ApiResponse<T> {
 
+    @ApiModelProperty(value = "HTTP 상태 코드", example = "200")
     private Integer status;
+
+    @ApiModelProperty(value = "응답 메시지", example = "정상")
     private String message;
+
+    @ApiModelProperty(value = "API별 응답 데이터")
     private T data;
 
 

@@ -13,6 +13,11 @@
 - H2 Database
 - Spring Data JPA
 - Gradle
+- Dependencies
+    - spring-data-jpa
+    - spring-cloud-openfeign
+    - swagger
+    - lombok
 
 <br>
 
@@ -20,14 +25,50 @@
 
 ![검색 서비스 및 검색어 수집 시스템](./diagram1.png)
 
+## API 명세
+
+### 0. Swagger
+
+- http://localhost:8080/swagger-ui/index.html
+- 프로젝트 실행 후 위 링크에서 상세한 API 명세를 확인하실 수 있습니다.
+
+<br>
+
 ### 1. 검색 API
 
-- 요청 파라미터
+- GET /blog/v1/search
+- 요청 파라미터(json)
 
-    - query(검색어)
-    - sort(정렬 기준)
-    - page(페이지)
-    - size(페이지 크기)
+  | key   | 설명                                                     | 필수 | 예시     |
+  | ----- | -------------------------------------------------------- | ---- | -------- |
+  | query | 검색어                                                   | Y    | jpa      |
+  | sort  | 정렬 기준. accuracy(정확도순), recency(최신순) 선택 가능 | Y    | accuracy |
+  | page  | 페이지 번호                                              | Y    | 1        |
+  | size  | 페이지 크기                                              | Y    | 10       |
+
+- 응답 Body 샘플(json)
+
+    ```json
+    {
+      "status": 200,
+      "message": "정상",
+      "data": {
+        "sort": "accuracy",
+        "page": 1,
+        "size": 10,
+        "totalCount": 100,
+        "totalPageCount": 10,
+        "posts": [
+          {
+            "contents": "카카오뱅크 가고싶다",
+            "postDate": "2023-03-22T00:00:00.000+00:00",
+            "title": "오늘의 일기",
+            "url": "https://bortfolio.tistory.com"
+          }
+        ]
+      }
+    }
+    ```
 
 - 핵심 기능(블로그 검색 결과 제공)
 
@@ -54,11 +95,33 @@
 
         - 목적: 인기 검색어의 실시간 정확도 향상
 
+<br>
+
 ### 2. 인기 검색어 조회 API
 
+- GET /blog/v1/search/queries/top
+
+- 요청 파라미터 없음
+
+- 응답 Body 샘플(json)
+
+    ```json
+    {
+      "status": 200,
+      "message": "정상",
+      "data": [
+        {
+          "query": "jpa",
+          "searchCount": 100
+        }
+      ]
+    }
+    ```
+
 - 핵심 기능(인기 검색어 조회)
-  - RDB를 직접 호출하지 않고 캐시(인메모리 데이터베이스) 활용하여 성능 개선
-  - 배치로 일정 주기마다 RDB 데이터를 인서트/업데이트
+    
+    - RDB를 직접 호출하지 않고 캐시(인메모리 데이터베이스) 활용하여 성능 개선
+    - 배치로 일정 주기마다 RDB 데이터를 인서트/업데이트
 
 <br>
 
@@ -67,18 +130,20 @@
 ### 1. 블로그 검색
 
 - **키워드를 통한 블로그 검색**
-  - 요청 파라미터 query를 받아 검색 소스 API 호출에 사용
+    - 요청 파라미터 query를 받아 검색 소스 API 호출에 사용
 - **검색 결과에서 Sorting(정확도순, 최신순) 기능을 지원**
-  - 요청 파라미터 sort에서 accuracy(정확도순), recency(최신순)을 받아 검색 소스 API 호출에 사용
-  - 각 검색 소스의 External Adapter에서 카카오, 네이버의 정확도순/최신순 파라미터 값으로 매핑
+    - 요청 파라미터 sort에서 accuracy(정확도순), recency(최신순)을 받아 검색 소스 API 호출에 사용
+    - 각 검색 소스의 External Adapter에서 카카오, 네이버의 정확도순/최신순 파라미터 값으로 매핑
 - **검색 결과는 Pagination 형태로 제공**
-  - 요청 파라미터에서 page, sort를 받고 페이징 정보를 응답값의 page, size, totalCount, totalPageCount로 전달
+    - 요청 파라미터에서 page, sort를 받고 페이징 정보를 응답값의 page, size, totalCount, totalPageCount로 전달
 
 - **검색 소스는 카카오 API**
     - Feign Client 이용해 카카오 API 호출
 - **추후 카카오 API 이외에 새로운 검색 소스가 추가 고려**
     - External Client를 구현하는 검색 소스별 Feign Client로 확장성 고려
     - External Adapter로 검색 소스별 API 명세에 유연하게 대응 가능한 구조
+
+<br>
 
 ### 2. 인기 검색어 목록
 
@@ -87,6 +152,8 @@
 
 - **검색어 별로 검색된 횟수 함께 표기**
     - 응답값에 searchCount 전달
+
+<br>
 
 ### 3. 추가 요건
 
@@ -102,14 +169,17 @@
     - Search Client에서 우선순위대로 External Client 호출
     - 성공하면 결과 반환, 실패하면 다음 External Client 호출하도록 구현
 
+<br>
+
 ### 4. 예외 처리
 
 - 비즈니스상 문제는 SearchBusinessException으로 구현
 - SearchBuisnessException은 ApiResult Enum 포함
-- 각 예외 케이스의 HTTP 상태, 응답 코드, 응답 메시지는 ApiResult에서  관리
+- 각 예외 케이스의 HTTP 상태, 응답 코드, 응답 메시지는 ApiResult에서 관리
 - 핸들링되지 못한 예외는 Controller Advice에서 일괄 기타 예외 케이스로 매핑
-  - Sentry 등 모니터링 적용하여 빠른 운영 이슈 발견
+    - Sentry 등 모니터링 적용하여 빠른 운영 이슈 발견
 
+<br>
 
 ### 5. 테스트 케이스
 
@@ -121,4 +191,3 @@
     - 인기 검색어 조회 API
         - 성공
 - 단위 테스트
-    - 1차 컨텐츠 제공자 통신 실패
