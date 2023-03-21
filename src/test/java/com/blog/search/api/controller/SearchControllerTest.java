@@ -106,7 +106,7 @@ class SearchControllerTest {
 
 
     @Nested
-    @DisplayName("[인기검색어]")
+    @DisplayName("[인기 검색어 조회]")
     class ListTopQueries {
 
         @DisplayName("[성공] 검색횟수 증가 반영")
