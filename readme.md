@@ -21,6 +21,13 @@
 
 <br>
 
+## 실행 방법
+
+1. 프로젝트의 [blog-search-0.0.1-SNAPSHOT.jar](https://github.com/infomuscle/blog-search/blob/main/blog-search-0.0.1-SNAPSHOT.jar) 다운로드
+2. 터미널에서 `java -jar blog-search-0.0.1-SNAPSHOT.jar` 명령어 입력
+
+<br>
+
 ## 시스템 설계
 
 ![검색 서비스 및 검색어 수집 시스템](./diagram1.png)
