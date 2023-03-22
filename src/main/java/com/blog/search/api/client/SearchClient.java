@@ -2,7 +2,7 @@ package com.blog.search.api.client;
 
 import com.blog.search.api.client.external.ExternalClientAdapter;
 import com.blog.search.api.client.external.ExternalClientResponse;
-import com.blog.search.api.client.external.ExternalContentsProvider;
+import com.blog.search.api.client.external.ExternalSearchSource;
 import com.blog.search.api.client.external.ExternalFeignClient;
 import com.blog.search.api.constant.ApiResult;
 import com.blog.search.api.exception.SearchBusinessException;
@@ -36,11 +36,11 @@ public class SearchClient {
         Map<String, ExternalFeignClient> clientBeans = applicationContext.getBeansOfType(ExternalFeignClient.class);
 
         // Enum 순서대로 리스트에 클리이언트 빈 추가
-        ExternalContentsProvider[] providers = ExternalContentsProvider.values();
-        for (ExternalContentsProvider provider : providers) {
+        ExternalSearchSource[] externalSearchSources = ExternalSearchSource.values();
+        for (ExternalSearchSource externalSearchSource : externalSearchSources) {
 
             // 컨텐츠 제공자 Enum 이름 소문자와 빈 이름에 일치하는 부분으로 찾기
-            String providerName = provider.name().toLowerCase();
+            String providerName = externalSearchSource.name().toLowerCase();
             Optional<String> beanName = clientBeans.keySet().stream().filter(k -> k.contains(providerName)).findFirst();
             if (beanName.isPresent()) {
                 clients.add(clientBeans.get(beanName.get()));
