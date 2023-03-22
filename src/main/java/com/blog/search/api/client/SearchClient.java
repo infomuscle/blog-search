@@ -7,7 +7,6 @@ import com.blog.search.api.client.external.ExternalFeignClient;
 import com.blog.search.api.constant.ApiResult;
 import com.blog.search.api.exception.SearchBusinessException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SearchClient {

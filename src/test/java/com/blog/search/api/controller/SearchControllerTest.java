@@ -68,6 +68,7 @@ class SearchControllerTest {
             MultiValueMap<String, String> parmas = createParmas(query, sort, page, size);
             performGet(URL_SEARCH, parmas)
                     .andExpect(jsonPath("$.status", is(ApiResult.정상.getHttpStatus())))
+                    .andExpect(jsonPath("$.code", is(ApiResult.정상.getCode())))
                     .andExpect(jsonPath("$.message", is(ApiResult.정상.getMessage())))
                     .andExpect(jsonPath("$.data.page", is(page)))
                     .andExpect(jsonPath("$.data.size", is(size)))
@@ -84,6 +85,7 @@ class SearchControllerTest {
             MultiValueMap<String, String> parmas = createParmas(query, sort, page, size);
             performGet(URL_SEARCH, parmas)
                     .andExpect(jsonPath("$.status", is(ApiResult.필수_파라미터_누락.getHttpStatus())))
+                    .andExpect(jsonPath("$.code", is(ApiResult.필수_파라미터_누락.getCode())))
                     .andExpect(jsonPath("$.message", is(ApiResult.필수_파라미터_누락.getMessage())))
                     .andExpect(jsonPath("$.data", nullValue()))
             ;
@@ -96,6 +98,7 @@ class SearchControllerTest {
             MultiValueMap<String, String> parmas = createParmas(query, sort, page, size);
             performGet(URL_SEARCH, parmas)
                     .andExpect(jsonPath("$.status", is(ApiResult.파라미터_검증_실패.getHttpStatus())))
+                    .andExpect(jsonPath("$.code", is(ApiResult.파라미터_검증_실패.getCode())))
                     .andExpect(jsonPath("$.message", containsString(ApiResult.파라미터_검증_실패.getMessage())))
                     .andExpect(jsonPath("$.data", nullValue()))
             ;
@@ -119,6 +122,7 @@ class SearchControllerTest {
 
             performGet(URL_LIST_TOP_QUERIS)
                     .andExpect(jsonPath("$.status", is(ApiResult.정상.getHttpStatus())))
+                    .andExpect(jsonPath("$.code", is(ApiResult.정상.getCode())))
                     .andExpect(jsonPath("$.message", is(ApiResult.정상.getMessage())))
                     .andExpect(jsonPath("$.data", hasSize(10)))
                     .andExpect(jsonPath(String.format("$.data[%s].query", count), is(MOCK_QUERIES[count])))

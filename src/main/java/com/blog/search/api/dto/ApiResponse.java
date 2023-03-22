@@ -13,6 +13,9 @@ public class ApiResponse<T> {
     @ApiModelProperty(value = "HTTP 상태 코드", example = "200")
     private Integer status;
 
+    @ApiModelProperty(value = "응답 코드", example = "0000")
+    private String code;
+
     @ApiModelProperty(value = "응답 메시지", example = "정상")
     private String message;
 
@@ -25,6 +28,7 @@ public class ApiResponse<T> {
      */
     public ApiResponse(T data) {
         this.status = ApiResult.정상.getHttpStatus();
+        this.code = ApiResult.정상.getCode();
         this.message = ApiResult.정상.getMessage();
         this.data = data;
     }
@@ -34,6 +38,7 @@ public class ApiResponse<T> {
      */
     public ApiResponse(SearchBusinessException e) {
         this.status = e.getApiResult().getHttpStatus();
+        this.code = e.getApiResult().getCode();
         this.message = e.getApiResult().getMessage();
     }
 
@@ -42,6 +47,7 @@ public class ApiResponse<T> {
      */
     public ApiResponse(SearchBusinessException e, String additionalMessage) {
         this.status = e.getApiResult().getHttpStatus();
+        this.code = e.getApiResult().getCode();
         this.message = new StringBuilder().append(e.getApiResult().getMessage()).append(" ").append(additionalMessage).toString();
     }
 
